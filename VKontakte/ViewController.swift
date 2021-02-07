@@ -56,6 +56,20 @@ class ViewController: UIViewController {
         scrollView?.scrollIndicatorInsets = contentInsets
     }
     
+    func checkUserData() -> Bool {
+        guard let login = loginInput.text,
+            let password = passwordInput.text else {
+            print("неуспешная авторизация")
+            return false }
+        
+        if login == "admin" && password == "12345678" {
+            print("успешная авторизация")
+            return true
+        }
+        print("неуспешная авторизация")
+        return false
+    }
+    
     @objc func keyboardWillBeHidden(notification: Notification) {
         
         let contentInsets = UIEdgeInsets.zero
@@ -63,21 +77,17 @@ class ViewController: UIViewController {
         scrollView?.scrollIndicatorInsets = contentInsets
     }
 
-    @IBAction func loginButtonPressed(_ sender: UIButton) {
-        
-        let login = loginInput.text!
-        let password = passwordInput.text!
-        
-        if login == "admin" && password == "12345678" {
-            print("успешная авторизация")
-        } else {
-            print("неуспешная авторизация")
-        }
+    func showLoginError() {
+        let alert = UIAlertController(title: "Error", message: "некорректный ввод", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
     }
     
-    @IBAction func registrationButtonPressed(_ sender: UIButton) {
-        print("переходим на экран регистрации")
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        if identifier != "signIn" || checkUserData() { return true }
+        showLoginError()
+        return false
     }
-    
 }
 
